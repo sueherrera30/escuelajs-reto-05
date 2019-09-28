@@ -3,12 +3,12 @@ const $observe = document.getElementById('observe');
 const API = 'https://us-central1-escuelajs-api.cloudfunctions.net/characters';
 
 const getData = api => {
-  fetch(api)
+    fetch(api)
     .then(response => response.json())
     .then(response => {
       const characters = response.results;
       const nextPage = response.info.next;
-      const savingInLocal = localStorage.setItem('next_fetch',nextPage)
+      localStorage.setItem('next_fetch',nextPage);
       let output = characters.map(character => {
         return `
       <article class="Card">
@@ -25,8 +25,13 @@ const getData = api => {
     .catch(error => console.log(error));
 }
 
-const loadData = () => {
-  getData(API);
+  function loadData(){
+  const nextUrl = localStorage.getItem('next_fetch');
+  if(nextUrl){
+    getData(nextUrl);
+  } else {
+    getData(API)
+  }
 }
 
 const intersectionObserver = new IntersectionObserver(entries => {
